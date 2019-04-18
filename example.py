@@ -8,5 +8,6 @@ reddit = praw.Reddit(user_agent='Comment Cleaner',
 
 rules = [
 Rule(max_upvotes=0) # anything with under 1 upvote
+Rule(nsfw=True) # removes all NSFW
 ]
 clearer.clear(reddit, rules, comments=True, submissions=True, new=True, controversial=True, top=True, hot=True)
