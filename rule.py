@@ -4,13 +4,14 @@ from datetime import datetime
 class Rule():
 
     def __init__(self, type="", min_upvotes=None, max_upvotes=None,
-                 min_age=None, max_age=None, subreddit=None):
+                 min_age=None, max_age=None, subreddit=None, nsfw=False):
         self.type = type
         self.min_upvotes = min_upvotes
         self.max_upvotes = max_upvotes
         self.min_age = min_age
         self.max_age = max_age
         self.subreddit = subreddit
+        self.nsfw = nsfw
 
     def is_true(self, item):
         if type(item) == praw.models.Comment and self.type == "submission":
@@ -33,5 +34,13 @@ class Rule():
 
         elif self.subreddit is not None and str(item.subreddit).lower() != self.subreddit.lower():
             return False
+
+        if self.nsfw:
+            if type(item) == praw.models.Comment:
+                if not item.submission.over_18:
+                    return False
+            elif type(item) == praw.models.Submission:
+                if not item.over_18:
+                    return False
 
         return True
