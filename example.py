@@ -10,4 +10,9 @@ rules = [
 Rule(max_upvotes=0) # anything with under 1 upvote
 Rule(nsfw=True) # removes all NSFW
 ]
-clearer.clear(reddit, rules, comments=True, submissions=True, new=True, controversial=True, top=True, hot=True)
+
+for item in clearer.clear(reddit, rules):
+    if type(item) == praw.models.Submission:
+        print("Submission in /r/{} with {} points: {}".format(item.subreddit, item.score, item.title))
+    elif type(item) == praw.models.Comment:
+        print("Comment in {} with {} points: {}".format(item.submission.title, item.score, item.body))

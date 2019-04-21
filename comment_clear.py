@@ -1,7 +1,7 @@
 import praw
 from datetime import datetime
 
-def clear(reddit, rules, submissions=False, comments=False, new=False, controversial=False, hot=False, top=False):
+def clear(reddit, rules, submissions=True, comments=True, new=True, controversial=True, hot=True, top=True, remove=True):
     items = set()
 
     if comments:
@@ -32,13 +32,18 @@ def clear(reddit, rules, submissions=False, comments=False, new=False, controver
     for item in items:
         for rule in rules:
             if rule.is_true(item):
-                try:
-                    item.edit("[removed by user]")
-                except:
-                    pass # image/link submission
-                item.delete()
+                if remove:
+                    try:
+                        item.edit("[removed by user]")
+                    except:
+                        pass # image/link submission
+                    item.delete()
+
                 count+=1
-                print(item)
+                yield(item)
                 break
 
-    print("{} items removed in {}!".format(count, datetime.now() - time_started))
+    if remove:
+        print("{} items removed in {}!".format(count, datetime.now() - time_started))
+    else:
+        print("{} eligible items found in {}!".format(count, datetime.now() - time_started))
