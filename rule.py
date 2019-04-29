@@ -5,14 +5,14 @@ class Rule():
 
     def __init__(self, type="", min_upvotes=None, max_upvotes=None,
                  min_age=None, max_age=None, nsfw=False,
-                 subreddit=None, not_subreddit=None):
+                 subreddits=None, not_subreddits=None):
         self.type = type
         self.min_upvotes = min_upvotes
         self.max_upvotes = max_upvotes
         self.min_age = min_age
         self.max_age = max_age
-        self.subreddit = subreddit
-        self.not_subreddit = not_subreddit
+        self.subreddits = [sub.lower() for sub in subreddits] if subreddits is not None else None
+        self.not_subreddits = [sub.lower() for sub in not_subreddits] if not_subreddits is not None else None
         self.nsfw = nsfw
 
     def is_true(self, item):
@@ -34,9 +34,9 @@ class Rule():
         if self.min_upvotes is not None and item.score < self.min_upvotes:
             return False
 
-        if self.subreddit is not None and str(item.subreddit).lower() != self.subreddit.lower():
+        if self.subreddits is not None and str(item.subreddit).lower() not in self.subreddits:
             return False
-        if self.not_subreddit is not None and str(item.subreddit).lower() == self.not_subreddit.lower():
+        if self.not_subreddits is not None and str(item.subreddit).lower() in self.not_subreddits:
             return False
 
         if self.nsfw:
@@ -62,13 +62,16 @@ class Rule():
             attrs.append("max_age={}".format(self.max_age))
 
         if self.min_upvotes is not None:
-            attrs.append("min_age={}".format(self.min_upvotes))
+            attrs.append("min_upvotes={}".format(self.min_upvotes))
 
         if self.max_upvotes is not None:
-            attrs.append("min_age={}".format(self.max_upvoes))
+            attrs.append("max_upvotes={}".format(self.max_upvotes))
 
-        if self.subreddit is not None:
-            attrs.append("min_age={}".format(self.subreddit))
+        if self.subreddits is not None:
+            attrs.append("subreddits={}".format(self.subreddits))
+
+        if self.not_subreddits is not None:
+            attrs.append("not_subreddits={}".format(self.not_subreddits))
 
         if self.nsfw:
             attrs.append("NSFW")
