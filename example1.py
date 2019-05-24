@@ -1,8 +1,11 @@
+### Author: Dan6erbond ###
+###  Date: 10.04.2019  ###
+###    Version: 1.2    ###
 import praw
-import comment_clear as clearer
+import seedless
 from rule import Rule
 
-reddit = praw.Reddit(user_agent='Comment Cleaner',
+reddit = praw.Reddit(user_agent='Seedless',
                      client_id=CLIENTID, client_secret=CLIENTSECRET,
                      username=USERNAME, password=PASSWORD)
 
@@ -11,7 +14,7 @@ Rule(max_upvotes=0) # anything with under 1 upvote
 Rule(nsfw=True) # removes all NSFW
 ]
 
-for item in clearer.clear(login.get_praw(), rules, remove=False):
+for item in seedless.clear(reddit, rules, remove=False):
     if type(item) == praw.models.Submission:
         i = input("Submission in /r/{} with {} points: {}\nShould it be removed? (y/n) ".format(item.subreddit, item.score, item.title))
     elif type(item) == praw.models.Comment:
